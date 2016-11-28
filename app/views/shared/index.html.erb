@@ -111,7 +111,7 @@
   var search_range;
 
   var map = new BMap.Map("l-map");
-  map.centerAndZoom(new BMap.Point(116.404, 39.915), 12);
+  map.centerAndZoom(new BMap.Point(120.628,31.317), 12);
   map.enableScrollWheelZoom(true);
   var myGeo = new BMap.Geocoder();
 
@@ -158,9 +158,9 @@
                   getData();
                 }, timeInterval);
               }
-            }, "北京市");
+            }, "苏州市");
           }
-        }, "北京市");
+        }, "苏州市");
       },
       error: function () {
         alert('没有权限喔')
@@ -209,7 +209,7 @@
                 console.log("warning", 'pause');
               } else {
                 getData();
-                console.log("success", data);
+                // console.log("success", data);
               }
 
             },
@@ -221,12 +221,13 @@
             }
           });
         } else {
+          console.log("Error in location: " + location.lng + "," + location.lat);
           getData();
           console.log("error", local.getStatus());
         }
       }
     });
-    local.searchNearby(keyword, location, search_range);
+    local.searchNearby(keyword, new BMap.Point(location.lng, location.lat), search_range);
   }
 
 
