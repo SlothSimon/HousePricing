@@ -7,7 +7,7 @@ class BusesController < ApplicationController
     @@bus_id= @@bus_id+1
     house=House.find_by(id: @@bus_id)
     # 避免重复抓取
-    while not house.buses_houses.blank?
+    while (not house) or (not house.buses_houses.blank?)
       @@bus_id= @@bus_id+1
       house=House.find_by(id: @@bus_id)
       break if @@bus_id>House.last.id

@@ -67,6 +67,12 @@ ActiveRecord::Schema.define(version: 20161027095326) do
     t.float    "latitude"
     t.float    "longitude"
     t.string   "street"
+    t.integer  "work_num"
+    t.integer  "hospital_num"
+    t.integer  "subway_num"
+    t.integer  "shop_num"
+    t.integer  "bus_num"
+    t.integer  "school_num"
     t.float    "distance"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false

@@ -60,70 +60,70 @@
       $.each(data, function (index, house) {
 
         if (house.distance <= 5000) {
-          if (house.average_price <= 30000) {
+          if (house.average_price <= 10000) {
             range['one']['five']++;
-          } else if (house.average_price > 30000 && house.average_price <= 60000) {
+          } else if (house.average_price > 10000 && house.average_price <= 20000) {
             range['one']['four']++;
-          } else if (house.average_price > 60000 && house.average_price <= 90000) {
+          } else if (house.average_price > 20000 && house.average_price <= 30000) {
             range['one']['three']++;
-          } else if (house.average_price > 90000 && house.average_price <= 120000) {
+          } else if (house.average_price > 30000 && house.average_price <= 50000) {
             range['one']['two']++;
-          } else if (house.average_price > 120000) {
+          } else if (house.average_price > 50000) {
             range['one']['one']++;
           }
 
         } else if (house.distance > 5000 && house.distance <= 10000) {
-          if (house.average_price <= 30000) {
+          if (house.average_price <= 10000) {
             range['two']['five']++;
-          } else if (house.average_price > 30000 && house.average_price <= 60000) {
+          } else if (house.average_price > 10000 && house.average_price <= 20000) {
             range['two']['four']++;
-          } else if (house.average_price > 60000 && house.average_price <= 90000) {
+          } else if (house.average_price > 20000 && house.average_price <= 30000) {
             range['two']['three']++;
-          } else if (house.average_price > 60000 && house.average_price <= 120000) {
+          } else if (house.average_price > 30000 && house.average_price <= 50000) {
             range['two']['two']++;
-          } else if (house.average_price > 120000) {
+          } else if (house.average_price > 50000) {
             range['two']['one']++;
           }
         }
 
         else if (house.distance > 10000 && house.distance <= 15000) {
-          if (house.average_price <= 30000) {
+          if (house.average_price <= 10000) {
             range['three']['five']++;
-          } else if (house.average_price > 30000 && house.average_price <= 60000) {
+          } else if (house.average_price > 10000 && house.average_price <= 20000) {
             range['three']['four']++;
-          } else if (house.average_price > 60000 && house.average_price <= 90000) {
+          } else if (house.average_price > 20000 && house.average_price <= 30000) {
             range['three']['three']++;
-          } else if (house.average_price > 90000 && house.average_price <= 120000) {
+          } else if (house.average_price > 30000 && house.average_price <= 50000) {
             range['three']['two']++;
-          } else if (house.average_price > 120000) {
+          } else if (house.average_price > 50000) {
             range['three']['one']++;
           }
         }
 
         else if (house.distance > 15000 && house.distance < 20000) {
-          if (house.average_price <= 30000) {
+          if (house.average_price <= 10000) {
             range['four']['five']++;
-          } else if (house.average_price > 30000 && house.average_price <= 60000) {
+          } else if (house.average_price > 10000 && house.average_price <= 20000) {
             range['four']['four']++;
-          } else if (house.average_price > 60000 && house.average_price <= 90000) {
+          } else if (house.average_price > 20000 && house.average_price <= 30000) {
             range['four']['three']++;
-          } else if (house.average_price > 90000 && house.average_price <= 120000) {
+          } else if (house.average_price > 30000 && house.average_price <= 50000) {
             range['four']['two']++;
-          } else if (house.average_price > 120000) {
+          } else if (house.average_price > 50000) {
             range['four']['one']++;
           }
         }
 
         else if (house.distance > 20000) {
-          if (house.average_price <= 30000) {
+          if (house.average_price <= 10000) {
             range['five']['five']++;
-          } else if (house.average_price > 30000 && house.average_price <= 60000) {
+          } else if (house.average_price > 10000 && house.average_price <= 20000) {
             range['five']['four']++;
-          } else if (house.average_price > 60000 && house.average_price <= 90000) {
+          } else if (house.average_price > 20000 && house.average_price <= 30000) {
             range['five']['three']++;
-          } else if (house.average_price > 90000 && house.average_price <= 120000) {
+          } else if (house.average_price > 30000 && house.average_price <= 50000) {
             range['five']['two']++;
-          } else if (house.average_price > 120000) {
+          } else if (house.average_price > 50000) {
             range['five']['one']++;
           }
         }
@@ -138,7 +138,7 @@
           }
         },
         legend: {
-          data: ['大于12万', '9万-12万', '6万-9万', '3万-6万', '小于3万']
+          data: ['大于5万', '3万-5万', '2万-3万', '1万-2万', '小于1万']
         },
         grid: {
           left: '3%',
@@ -155,7 +155,7 @@
         },
         series: [
           {
-            name: '大于12万',
+            name: '大于5万',
             type: 'bar',
             stack: '总量',
             label: {
@@ -167,7 +167,7 @@
             data: [range['one']['one'], range['two']['one'], range['three']['one'], range['four']['one'], range['five']['one']]
           },
           {
-            name: '9万-12万',
+            name: '3万-5万',
             type: 'bar',
             stack: '总量',
             label: {
@@ -179,7 +179,7 @@
             data: [range['one']['two'], range['two']['two'], range['three']['two'], range['four']['two'], range['five']['two']]
           },
           {
-            name: '6万-9万',
+            name: '2万-3万',
             type: 'bar',
             stack: '总量',
             label: {
@@ -191,7 +191,7 @@
             data: [range['one']['three'], range['two']['three'], range['three']['three'], range['four']['three'], range['five']['three']]
           },
           {
-            name: '3万-6万',
+            name: '1万-2万',
             type: 'bar',
             stack: '总量',
             label: {
@@ -203,7 +203,7 @@
             data: [range['one']['four'], range['two']['four'], range['three']['four'], range['four']['four'], range['five']['four']]
           },
           {
-            name: '小于3万',
+            name: '小于1万',
             type: 'bar',
             stack: '总量',
             label: {

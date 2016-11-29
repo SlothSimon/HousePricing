@@ -97,7 +97,7 @@ class HousesController < ApplicationController
     @@house_id= @@house_id+1
     house=House.find_by(id: @@house_id)
 
-    while (house.nil? or !house.latitude.nil? or !house.longitude.nil? or !house.distance.nil?)
+    while (house.nil? or (!house.latitude.nil? and !house.longitude.nil? and !house.distance.nil?))
       @@house_id= @@house_id+1
       house=House.find_by(id: @@house_id)
       if (@@house_id>House.last.id)
