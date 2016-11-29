@@ -7,15 +7,18 @@ class SchoolsController < ApplicationController
   def ajax
     @@school_id=@@school_id+1
     house=House.find_by(id: @@school_id)
-    while (house.nil? or house.schools.count<=50)
-      @@school_id= @@school_id+1
-      house=House.find_by(id: @@school_id)
-      if @@school_id>House.last.id
-        break
-      end
+    # 避免重复抓取
+    while (not house) or (not house.schools_houses.blank?)
+        @@school_id= @@school_id+1
+        house=House.find_by(id: @@school_id)
+        break if @@school_id>House.last.id
     end
-    respond_to do |format|
-      format.json { render :json => house }
+    if @@school_id> House.last.id
+        redirect_to schools_path, flash: {:success => "抓取完毕"}
+        else
+        respond_to do |format|
+            format.json { render :json => house }
+        end
     end
   end
 
@@ -25,19 +28,15 @@ class SchoolsController < ApplicationController
 
   def create
     @house=House.find_by(id: params[:id])
-    @house.schools.delete_all
+    @house.schools_houses.delete_all
     params[:info].split(',').each do |row|
       attr=row.split('/')
-      school=School.new(name: attr[0], longitude: attr[1], latitude: attr[2], distance: attr[3])
-      if school.valid?
-        school.save!
-        @house.schools<<school
-      else
-        exsited_school=School.find_by(longitude: attr[1], latitude: attr[2])
-        unless exsited_school.nil?
-          @house.schools<<exsited_school
-        end
+      school=School.find_by(longitude: attr[1], latitude: attr[2])
+      if school.nil?
+          school=School.new(name: attr[0], longitude: attr[1], latitude: attr[2])
+          school.save
       end
+      SchoolsHouses.create(school_id: school.id, house_id: @house.id, distance: attr[3])
     end
     render json: params.as_json
   end

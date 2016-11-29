@@ -2,6 +2,16 @@ require 'csv'
 class House < ActiveRecord::Base
   has_many :buses, through: :buses_houses
   has_many :buses_houses, class_name: "BusesHouses"
+  has_many :hospitals, through: :hospitals_houses
+  has_many :hospitals_houses, class_name: "HospitalsHouses"
+  has_many :schools, through: :schools_houses
+  has_many :schools_houses, class_name: "SchoolsHouses"
+  has_many :subways, through: :subways_houses
+  has_many :subways_houses, class_name: "SubwaysHouses"
+  has_many :shops, through: :shops_houses
+  has_many :shops_houses, class_name: "ShopsHouses"
+  has_many :works, through: :works_houses
+  has_many :works_houses, class_name: "WorksHouses"
 
   has_and_belongs_to_many :hospitals
   has_and_belongs_to_many :schools

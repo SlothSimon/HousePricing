@@ -9,15 +9,18 @@ class ShopsController < ApplicationController
   def ajax
     @@shop_id= @@shop_id+1
     house=House.find_by(id: @@shop_id)
-    while (house.nil? or house.shops.count<=50)
-      @@shop_id= @@shop_id+1
-      house=House.find_by(id: @@shop_id)
-      if @@shop_id>House.last.id
-        break
-      end
+    # 避免重复抓取
+    while (not house) or (not house.shops_houses.blank?)
+        @@shop_id= @@shop_id+1
+        house=House.find_by(id: @@shop_id)
+        break if @@shop_id>House.last.id
     end
-    respond_to do |format|
-      format.json { render :json => house }
+    if @@shop_id> House.last.id
+        redirect_to shops_url, flash: {:success => "抓取完毕"}
+        else
+        respond_to do |format|
+            format.json { render :json => house }
+        end
     end
   end
 
@@ -27,19 +30,15 @@ class ShopsController < ApplicationController
 
   def create
     @house=House.find_by(id: params[:id])
-    @house.shops.delete_all
+    @house.shops_houses.delete_all
     params[:info].split(',').each do |row|
       attr=row.split('/')
-      shop=Shop.new(name: attr[0], longitude: attr[1], latitude: attr[2], distance: attr[3])
-      if shop.valid?
-        shop.save!
-        @house.shops<<shop
-      else
-        exsited_shop=Shop.find_by(longitude: attr[1], latitude: attr[2])
-        unless exsited_shop.nil?
-          @house.shops<<exsited_shop
-        end
+      shop=Shop.find_by(longitude: attr[1], latitude: attr[2])
+      if shop.nil?
+          shop=Shop.new(name: attr[0], longitude: attr[1], latitude: attr[2])
+          shop.save
       end
+      ShopsHouses.create(shop_id: shop.id, house_id: @house.id, distance: attr[3])
     end
     render json: params.as_json
   end

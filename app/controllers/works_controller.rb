@@ -7,15 +7,18 @@ class WorksController < ApplicationController
   def ajax
     @@work_id=@@work_id+1
     house=House.find_by(id: @@work_id)
-    while (house.nil? or house.works.count<=50)
-      @@work_id= @@work_id+1
-      house=House.find_by(id: @@work_id)
-      if @@work_id>House.last.id
-        break
-      end
+    # 避免重复抓取
+    while (not house) or (not house.works_houses.blank?)
+        @@work_id= @@work_id+1
+        house=House.find_by(id: @@work_id)
+        break if @@work_id>House.last.id
     end
-    respond_to do |format|
-      format.json { render :json => house }
+    if @@work_id> House.last.id
+        redirect_to works_path, flash: {:success => "抓取完毕"}
+        else
+        respond_to do |format|
+            format.json { render :json => house }
+        end
     end
   end
 
@@ -25,19 +28,15 @@ class WorksController < ApplicationController
 
   def create
     @house=House.find_by(id: params[:id])
-    @house.works.delete_all
+    @house.works_houses.delete_all
     params[:info].split(',').each do |row|
       attr=row.split('/')
-      work=Work.new(name: attr[0], longitude: attr[1], latitude: attr[2], distance: attr[3])
-      if work.valid?
-        work.save!
-        @house.works<<work
-      else
-        exsited_work=Work.find_by(longitude: attr[1], latitude: attr[2])
-        unless exsited_work.nil?
-          @house.works<<exsited_work
-        end
+      work=Work.find_by(longitude: attr[1], latitude: attr[2])
+      if work.nil?
+          work=Work.new(name: attr[0], longitude: attr[1], latitude: attr[2])
+          work.save
       end
+      WorksHouses.create(work_id: work.id, house_id: @house.id, distance: attr[3])
     end
     render json: params.as_json
   end

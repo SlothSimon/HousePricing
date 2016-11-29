@@ -7,15 +7,19 @@ class HospitalsController < ApplicationController
   def ajax
     @@hospital=@@hospital+1
     house=House.find_by(id: @@hospital)
-    while (house.nil? or house.hospitals.count<=50)
+    while (not house) or (not house.hospitals_houses.blank?)
       @@hospital= @@hospital+1
       house=House.find_by(id: @@hospital)
       if @@hospital>House.last.id
         break
       end
     end
-    respond_to do |format|
-      format.json { render :json => house }
+    if @@hospital> House.last.id
+        redirect_to hospitals_path, flash: {:success => "抓取完毕"}
+        else
+        respond_to do |format|
+            format.json { render :json => house }
+        end
     end
   end
 
@@ -25,19 +29,15 @@ class HospitalsController < ApplicationController
 
   def create
     @house=House.find_by(id: params[:id])
-    @house.hospitals.delete_all
+    @house.hospitals_houses.delete_all
     params[:info].split(',').each do |row|
       attr=row.split('/')
-      hospital=Hospital.new(name: attr[0], longitude: attr[1], latitude: attr[2], distance: attr[3])
-      if hospital.valid?
-        hospital.save!
-        @house.hospitals<<hospital
-      else
-        exsited_hospital=Hospital.find_by(longitude: attr[1], latitude: attr[2])
-        unless exsited_hospital.nil?
-          @house.hospitals<<exsited_hospital
-        end
+      hospital=Hospital.find_by(longitude: attr[1], latitude: attr[2])
+      if hospital.nil?
+        hospital=Hospital.new(name: attr[0], longitude: attr[1], latitude: attr[2])
+        hospital.save
       end
+      HospitalsHouses.create(hospital_id: hospital.id, house_id: @house.id, distance: attr[3])
     end
     render json: params.as_json
   end

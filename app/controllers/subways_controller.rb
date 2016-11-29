@@ -7,15 +7,18 @@ class SubwaysController < ApplicationController
   def ajax
     @@subway_id=@@subway_id+1
     house=House.find_by(id: @@subway_id)
-    while (house.nil? or house.subways.count<=50)
-      @@subway_id= @@subway_id+1
-      house=House.find_by(id: @@subway_id)
-      if @@subway_id>House.last.id
-        break
-      end
+    # 避免重复抓取
+    while (not house) or (not house.subways_houses.blank?)
+        @@subway_id= @@subway_id+1
+        house=House.find_by(id: @@subway_id)
+        break if @@subway_id>House.last.id
     end
-    respond_to do |format|
-      format.json { render :json => house }
+    if @@subway_id> House.last.id
+        redirect_to subways_path, flash: {:success => "抓取完毕"}
+        else
+        respond_to do |format|
+            format.json { render :json => house }
+        end
     end
   end
 
@@ -25,19 +28,15 @@ class SubwaysController < ApplicationController
 
   def create
     @house=House.find_by(id: params[:id])
-    @house.subways.delete_all
+    @house.subways_houses.delete_all
     params[:info].split(',').each do |row|
       attr=row.split('/')
-      subway=Subway.new(name: attr[0], longitude: attr[1], latitude: attr[2], distance: attr[3])
-      if subway.valid?
-        subway.save!
-        @house.subways<<subway
-      else
-        exsited_subway=Subway.find_by(longitude: attr[1], latitude: attr[2])
-        unless exsited_subway.nil?
-          @house.subways<<exsited_subway
-        end
+      subway=Subway.find_by(longitude: attr[1], latitude: attr[2])
+      if subway.nil?
+          subway=Subway.new(name: attr[0], longitude: attr[1], latitude: attr[2])
+          subway.save
       end
+      SubwaysHouses.create(subway_id: subway.id, house_id: @house.id, distance: attr[3])
     end
     render json: params.as_json
   end
